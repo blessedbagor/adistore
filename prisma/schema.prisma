@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//Ang "Product" which is the name sa model mao sab ni sya ang ma name sa database table inig migrate.
+model Product {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid //This will gonna take care of the UUID and then it will generate a random id
+  name         String
+  slug         String @unique(map: "product_slug_idx") //unique sya pero  gibutangan sya og index which is kaning parenthesis the purpose is to make it more a little bit convenient.
+  category     String
+  images       String[] //This is an array of string
+  brand        String
+  description  String
+  stock        Int
+  price        Decimal  @default(0) @db.Decimal(12,2) //Naa syay default value nga zero and then sa decimal kay 12 ang sa left side ug 2 sa right side
+  rating       Decimal  @default(0) @db.Decimal(3,2) //The same process ra gihapon  //Kay ang rating naa mana siyay decimal like 4.7 or 4.1
+  numReviews   Int      @default(0) 
+  isFeatured   Boolean  @default(false) //kay boolean man sya gibutngan sya og default nga false
+  banner       String? //Ang question mark dire nagpasabot na sya og optional so kani nga attribute kay optional rani sya
+  createdAt    DateTime @default(now()) @db.Timestamp(6) //Now ang iyahang default kay mao na syay function para mokuha sa latest date and time ug gi addan sab sya og milleseconds with 6 digits so that we can be more precise by the date and time.
+}
